@@ -23,10 +23,10 @@ service /hello on new http:Listener(9090) {
        
         mongodb:ClientConfig mongoConfig = {
            // host: "localhost",
-           host: "172.17.0.10",
+           host: "mongodb1",
             port: 27017,
-            username: "admin",
-            password: "admin",
+          //  username: "admin",
+           // password: "admin",
             options: {sslEnabled: false, serverSelectionTimeout: 5000}
         };
         mongodb:Client mongoClient = checkpanic new (mongoConfig, "Ballerina");
