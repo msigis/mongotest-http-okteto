@@ -1,0 +1,4 @@
+ [container.image]
+ repository="marco"
+ name="mongotest-http"
+ tag="v0.1.0"
