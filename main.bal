@@ -8,7 +8,7 @@ type Student record {
     int Grade;
     map<any> Marks;
 };
-
+http:Client clientEndpoint = check new ("http://postman-echo.com");
 
 
 
@@ -112,5 +112,41 @@ service /hello on new http:Listener(9090) {
         int grade = <@untainted>student.Grade;
         string english = <@untainted string>student.Marks["English"];
         return {Name: name, Grade: grade, English: english};
+    }
+
+  
+    resource function post test()
+            returns json {
+        log:printInfo(" test httpClient");
+        var responseClient = clientEndpoint->get("/get?test=123");
+
+        handleResponse(responseClient);
+              //Accesses the fields of the `Student` record.
+    if (responseClient is http:Response) {
+        string contentType = responseClient.getContentType();
+        log:printInfo("Content-Type: " + contentType);
+
+        int statusCode = responseClient.statusCode;
+        log:printInfo("Status code: " + statusCode.toString());
+        return {Name: responseClient.statusCode, Grade: "", English: ""};
+    } else {
+        log:printInfo("Error when calling the backend: " +   responseClient.message());
+        return {Name: responseClient.message(), Grade: "", English: ""};
+    }
+     
+    }
+}
+
+function handleResponse(http:Response|error response) {
+    if (response is http:Response) {
+
+        var msg = response.getJsonPayload();
+        if (msg is json) {
+            log:printInfo(msg.toJsonString());
+        } else {
+            log:printInfo("Invalid payload received:" + msg.message());
+        }
+    } else {
+        log:printInfo("Error when calling the backend: " + response.message());
     }
 }
